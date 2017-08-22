@@ -1,0 +1,53 @@
+#!/bin/sh
+
+error(){
+  red="\e[1;31m"
+  reset="\e[0m"
+  printf "${red}%s${reset}\n" "$1"  >&2
+}
+
+info(){
+  printf "%s\n" "$1"
+}
+
+usage='xcode-version
+Print the current Xcode version
+
+usage: xcode-version [-h | --help] [[-n | --number] | [-p | --path]]
+
+  -h | --help           Print this usage documentation and exit
+
+  -n | --number         DEFAULT - Print the version number of the currently
+                        selected Xcode.
+
+  -p | --path           Print the path of the currently selected Xcode.
+'
+
+print_path=0
+
+case $1 in
+  -n|--number)
+    shift
+    ;;
+  -p|--path)
+    print_path=1
+    shift
+    ;;
+esac
+
+case $1 in
+  -n|--number|-p|--path)
+    error "Invalid configuration, can't specify multiple version types"
+    exit 1
+    ;;
+  --help|-h)
+    info "$usage"
+    exit 0
+    ;;
+esac
+
+if [ "$print_path" -eq "1" ]; then
+  xcode-select --print-path | cut -d'/' -f-3
+else
+  xcodebuild -version | grep "Xcode"
+fi

@@ -1,0 +1,49 @@
+#!/bin/sh
+
+error(){
+  red="\e[1;31m"
+  reset="\e[0m"
+  printf "${red}%s${reset}\n" "$1"  >&2
+}
+
+info(){
+  printf "%s\n" "$1"
+}
+
+usage='xcode-switch
+Switch the currently selected Xcode version
+
+usage: xcode-switch [-h | --help] [VERSION]
+
+  -h | --help           Print this usage documentation and exit
+
+  VERSION               The optional initial version to search for. Note that
+                        if there is no Xcode version matching this query, fzf
+                        will be displayed in an empty state. By default this is
+                        not set, and fzf will automatically select the version
+                        if there is only one other Xcode version installed.
+'
+
+case $1 in
+  --help|-h)
+    info "$usage"
+    exit 0
+    ;;
+esac
+
+cmd_prefix=""
+if [ "$(id -u)" != 0 ]; then
+  cmd_prefix="sudo"
+fi
+
+current_app=$(xcode-version --path)
+
+if other_apps=$(xcode-list --full-path | grep --invert-match "$current_app"); then
+  echo "$other_apps" \
+    | fzf --query="$1" --select-1 --print0 \
+    | xargs -0 $cmd_prefix xcode-select --switch
+else
+  error "No other Xcode versions found to switch to"
+fi
+
+info "Current Xcode is now '$(xcode-version --path)'"

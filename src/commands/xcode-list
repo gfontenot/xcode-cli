@@ -1,0 +1,53 @@
+#!/bin/sh
+
+error(){
+  red="\e[1;31m"
+  reset="\e[0m"
+  printf "${red}%s${reset}\n" "$1"  >&2
+}
+
+info(){
+  printf "%s\n" "$1"
+}
+
+usage='xcode-list
+List installed Xcode versions
+
+usage: xcode-list [-h | --help] [-f | --full-path]
+
+  -h | --help           Print this usage documentation and exit
+
+  -f | --full-path      Print the full path of the Xcode versions. By default,
+                        only the name is printed
+'
+
+full_path=0
+
+case $1 in
+  -f|--full-path)
+    full_path=1
+    shift
+    ;;
+esac
+
+case $1 in
+  --f|--full-path)
+    error "Invalid configuration, can't specify multiple path options"
+    exit 1
+    ;;
+  --help|-h)
+    info "$usage"
+    exit 0
+    ;;
+esac
+
+apps=$(find /Applications -maxdepth 1 -name "Xcode*.app")
+
+if [ "$full_path" -eq "1" ]; then
+  echo "$apps"
+else
+  for path in $apps; do
+    partial=$(cut -d'/' -f3 <<< "$path" | sed 's/\.app//')
+    echo "$partial"
+  done
+fi

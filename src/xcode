@@ -1,0 +1,54 @@
+#!/bin/sh
+
+error(){
+  red="\e[1;31m"
+  reset="\e[0m"
+  printf "${red}%s${reset}\n" "$1"  >&2
+}
+
+info(){
+  printf "%s\n" "$1"
+}
+
+available_commands=$( \
+  echo "$PATH" \
+  | tr ":" "\n" \
+  | xargs -I {} sh -c 'test -d {} && echo {}' \
+  | xargs -I {} find {} -maxdepth 1 -perm +111 -iname "xcode-*" \
+  | xargs basename \
+  )
+
+usage='xcode
+Perform Xcode actions from the command line
+
+usage: xcode [-h | --help] [COMMAND]
+
+  -h | --help           Print this usage documentation and exit
+
+  COMMAND               The command to run. This defaults to open.
+                        Run xcode COMMAND --help for help with a specific
+                        command.
+'
+
+case $1 in
+  --help|-h)
+    info "$usage"
+    info "Available commands:"
+    info "$(echo "$available_commands" | sed 's/xcode-//')"
+    exit 0
+    ;;
+esac
+
+for cmd in $available_commands; do
+  if [ "$cmd" = "xcode-$1" ]; then
+    command=$cmd
+    shift
+    continue
+  fi
+done
+
+if [ -z "$command" ]; then
+  error "Unknown command: $1"
+else
+  $command "$@"
+fi
