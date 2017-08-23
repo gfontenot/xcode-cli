@@ -14,7 +14,7 @@ available_commands=$( \
   echo "$PATH" \
   | tr ":" "\n" \
   | xargs -I {} sh -c 'test -d {} && echo {}' \
-  | xargs -I {} find {} -maxdepth 1 -perm +111 -iname "xcode-*" \
+  | xargs -I {} find {} -maxdepth 1 -perm +111 -name "xcode-*" \
   | xargs basename \
   )
 
