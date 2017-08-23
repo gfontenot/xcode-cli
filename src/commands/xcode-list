@@ -41,9 +41,15 @@ case $1 in
     ;;
 esac
 
+find_xcodes() {
+  find /Applications -maxdepth 1 -name "Xcode*.app" "$@"
+}
+
 if [ "$full_path" -eq "1" ]; then
-  find /Applications -maxdepth 1 -name "Xcode*.app"
+  find_xcodes
 else
-  find /Applications -maxdepth 1 -name "Xcode*.app" \
-    -exec sh -c 'echo "$1" | cut -d"/" -f3 | sed "s/\.app//"' - {} \;
+  # We know that this doesn't expand the $1 substitution, but since we're using
+  # a function to wrap find, shellcheck doesn't see how it works.
+  # shellcheck disable=SC2016
+  find_xcodes -exec sh -c 'echo "$1" | cut -d"/" -f3 | sed "s/\.app//"' - {} \;
 fi
