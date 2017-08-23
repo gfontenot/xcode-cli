@@ -41,13 +41,9 @@ case $1 in
     ;;
 esac
 
-apps=$(find /Applications -maxdepth 1 -name "Xcode*.app")
-
 if [ "$full_path" -eq "1" ]; then
-  echo "$apps"
+  find /Applications -maxdepth 1 -name "Xcode*.app"
 else
-  for path in $apps; do
-    partial=$(cut -d'/' -f3 <<< "$path" | sed 's/\.app//')
-    echo "$partial"
-  done
+  find /Applications -maxdepth 1 -name "Xcode*.app" \
+    -exec sh -c 'echo "$1" | cut -d"/" -f3 | sed "s/\.app//"' - {} \;
 fi
