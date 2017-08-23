@@ -3,7 +3,7 @@
 error(){
   red="\e[1;31m"
   reset="\e[0m"
-  printf "${red}%s${reset}\n" "$1"  >&2
+  printf "${red}%s${reset}\n" "$1" >&2
 }
 
 info(){
