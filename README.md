@@ -9,7 +9,13 @@ them easier to share will encourage external contributions.
 
 ## Installation
 
-wip (will be installable via Homebrew)
+Via [homebrew]:
+
+```
+$ brew install gfontenot/formulae/xcode-cli
+```
+
+[homebrew]: https://brew.sh
 
 ## Usage
 
