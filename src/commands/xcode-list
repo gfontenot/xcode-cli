@@ -48,8 +48,5 @@ find_xcodes() {
 if [ "$full_path" -eq "1" ]; then
   find_xcodes
 else
-  # We know that this doesn't expand the $1 substitution, but since we're using
-  # a function to wrap find, shellcheck doesn't see how it works.
-  # shellcheck disable=SC2016
-  find_xcodes -exec sh -c 'echo "$1" | cut -d"/" -f3 | sed "s/\.app//"' - {} \;
+  find_xcodes -exec basename {} \; | sed 's/\.app//'
 fi
