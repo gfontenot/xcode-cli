@@ -1,0 +1,22 @@
+#!/bin/sh
+
+info(){
+  printf "%s\\n" "$1"
+}
+
+usage='xcode-nuke
+Deletes Derived Data
+
+usage: xcode-nuke [-h | --help]
+
+  -h | --help Print this usage documentation and exit
+'
+
+case $1 in
+  --help|-h)
+    info "$usage"
+    exit 0
+    ;;
+esac
+
+rm -rf ~/Library/Developer/Xcode/DerivedData
