@@ -1,0 +1,20 @@
+info(){
+  printf "%s\\n" "$1"
+}
+
+usage='xcode-cleanup
+Delete unavailable devices
+
+usage: xcode-cleanup [-h | --help]
+
+  -h | --help           Print this usage documentation and exit
+'
+
+case $1 in
+  --help|-h)
+    info "$usage"
+    exit 0
+    ;;
+esac
+
+xcrun simctl delete unavailable
