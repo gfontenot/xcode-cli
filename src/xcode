@@ -13,7 +13,7 @@ info(){
 available_commands=$( \
   echo "$PATH" \
   | tr ":" "\n" \
-  | xargs -I {} sh -c 'test -d {} && echo {}' \
+  | xargs -I {} sh -c 'test -d "$@" && echo "$@"' test {} \
   | xargs -I {} find {} -maxdepth 1 -perm +111 -name "xcode-*" \
   | xargs basename \
   )
